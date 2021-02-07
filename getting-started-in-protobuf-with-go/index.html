@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="shortcut icon" href="https://example.com/images/favicon.png" />
+<title>Getting Started In Protobuf With Go | Shubham Srivastava Blog</title>
+<meta name="title" content="Getting Started In Protobuf With Go" />
+<meta name="description" content="Understanding protocol buffers and getting started using Go." />
+<meta name="keywords" content="Go,Protobuf,Protocol Buffer," />
+
+
+<meta property="og:title" content="Getting Started In Protobuf With Go" />
+<meta property="og:description" content="Understanding protocol buffers and getting started using Go." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/getting-started-in-protobuf-with-go/" />
+<meta property="og:image" content="https://example.com/images/share.png"/>
+<meta property="article:published_time" content="2021-02-06T16:53:17+05:30" />
+<meta property="article:modified_time" content="2021-02-06T16:53:17+05:30" /><meta property="og:site_name" content="Shubham Srivastava Blog" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/images/share.png"/>
+
+<meta name="twitter:title" content="Getting Started In Protobuf With Go"/>
+<meta name="twitter:description" content="Understanding protocol buffers and getting started using Go."/>
+
+
+
+<meta itemprop="name" content="Getting Started In Protobuf With Go">
+<meta itemprop="description" content="Understanding protocol buffers and getting started using Go.">
+<meta itemprop="datePublished" content="2021-02-06T16:53:17+05:30" />
+<meta itemprop="dateModified" content="2021-02-06T16:53:17+05:30" />
+<meta itemprop="wordCount" content="504">
+<meta itemprop="image" content="https://example.com/images/share.png"/>
+
+
+
+<meta itemprop="keywords" content="Go,Protobuf,Protocol Buffer," />
+
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+  <style>
+  body {
+    font-family: Verdana, sans-serif;
+    margin: auto;
+    padding: 20px;
+    max-width: 720px;
+    text-align: left;
+    background-color: #fff;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    color: #444;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  strong,
+  b {
+    color: #222;
+  }
+
+  a {
+    color: #3273dc;
+     
+  }
+
+  .title {
+    text-decoration: none;
+    border: 0;
+  }
+
+  .title span {
+    font-weight: 400;
+  }
+
+  nav a {
+    margin-right: 10px;
+  }
+
+  textarea {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  input {
+    font-size: 16px;
+  }
+
+  content {
+    line-height: 1.6;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  code {
+    padding: 2px 5px;
+    background-color: #3b3b3b;
+    color: #fff;
+  }
+
+  pre code {
+    color: #fff;
+    display: block;
+    padding: 20px;
+    white-space: pre-wrap;
+    font-size: 14px;
+  }
+
+  blockquote {
+    border-left: 1px solid #999;
+    color: #222;
+    padding-left: 20px;
+    font-style: italic;
+  }
+
+  footer {
+    padding: 25px;
+    text-align: center;
+  }
+
+  .helptext {
+    color: #777;
+    font-size: small;
+  }
+
+  .errorlist {
+    color: #eba613;
+    font-size: small;
+  }
+
+   
+  ul.blog-posts {
+    list-style-type: none;
+    padding: unset;
+  }
+
+  ul.blog-posts li {
+    display: flex;
+  }
+
+  ul.blog-posts li span {
+    flex: 0 0 130px;
+  }
+
+  ul.blog-posts li a:visited {
+    color: #8b6fcb;
+  }
+
+   
+
+</style>
+
+</head>
+
+<body>
+  <header><a href="/" class="title">
+  <h2>Shubham Srivastava Blog</h2>
+</a>
+<nav><a href="/">Home</a>
+
+
+<a href="/blog">Blog</a>
+
+</nav>
+</header>
+  <main>
+
+<h1>Getting Started In Protobuf With Go</h1>
+<p>
+  <i>
+    <time datetime='2021-02-06' pubdate>
+      06 Feb, 2021
+    </time>
+  </i>
+</p>
+
+<content>
+  <p>This article is a basic introduction to protocol buffers, I will go through what are protocol buffers and comparison to other alternatives :)</p>
+<h2 id="what-are-protocol-buffers">What are Protocol Buffers?</h2>
+<p>&ldquo;Protocol Buffers (a.k.a., protobuf) are Google&rsquo;s language-neutral, platform-neutral, extensible mechanism for serializing structured data.&rdquo; - <a href="https://developers.google.com">https://developers.google.com</a></p>
+<p>Protocol Buffers were designed to optimize the data transmitted over the wire. Protobuf provides binary serialization that results in smaller messages that need to be transferred over the wire compared to popular text based serialization in XML or JSON. This makes use of a special <code>.proto</code> file defining the schema using which the messages will be parsed</p>
+<h2 id="benefits">Benefits</h2>
+<ol>
+<li>
+<p><strong>Smaller and faster</strong></p>
+<p>Protobuf being a binary serialization format results in smaller messages that take up lesser bandwidth and transmit faster. Considering increasing number of organizations are using micro-services that interact with each other for millions of requests per day every small optimization for individual requests scales up to concrete numbers in terms of cost.</p>
+</li>
+<li>
+<p><strong>Backward and forward compatibility</strong></p>
+<p>To maintain backward and forward compatibility the protobuf schema definitions use numbered fields this enables newer changes to schema definitions will be compatible with older code still being able to parse messages.</p>
+</li>
+<li>
+<p><strong>Interoperability</strong></p>
+<p>The protobuf comes with custom proto file compiler that will read the schema definition and code generators for most common languages out of the box. This makes the serialization and deserialization of messages compatible with all supported languages with no boilerplate code. This makes working in multiple languages in the stack easily.</p>
+</li>
+<li>
+<p><strong>Clear cross-application scheme</strong></p>
+<p>Protobuf enables a strict schema across the stack making the data format consistent across the system, this becomes more important when your system works with multiple application with same schemas, now the data will be in same uniform format across the system.</p>
+</li>
+</ol>
+<h2 id="lets-create-our-first-schema">Lets create our first Schema</h2>
+<p>So lets create our first proto file named <code>pb/person.proto</code>.</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-proto" data-lang="proto">syntax <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;proto3&#34;</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#f92672">package</span> main;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">option</span> go_package <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;main&#34;</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">message</span> <span style="color:#a6e22e">Person</span> {<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>  <span style="color:#66d9ef">uint64</span> id <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>  <span style="color:#66d9ef">string</span> email <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>  <span style="color:#66d9ef">bool</span> is_active <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}</code></pre></td></tr></table>
+</div>
+</div>
+<p>Now that we have defined our first message, we will need to use the proto compiler to generate code for language we want to use in our case Go. the setup instructions can be found <a href="https://developers.google.com/protocol-buffers/docs/gotutorial#compiling-your-protocol-buffers">here</a>.</p>
+<p>We can now use the protoc compiler by providing path to input proto file and output go directory</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">protoc --proto_path<span style="color:#f92672">=</span>pb/. --go_out<span style="color:#f92672">=</span>pb/. person.proto</code></pre></td></tr></table>
+</div>
+</div>
+<p>Now to use this generated boilerplate code we will create our main file</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;example1/pb&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">person</span> <span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">Person</span>
+
+	<span style="color:#a6e22e">person</span>.<span style="color:#a6e22e">Id</span> = <span style="color:#ae81ff">1001</span>
+	<span style="color:#a6e22e">person</span>.<span style="color:#a6e22e">Email</span> = <span style="color:#e6db74">&#34;abc@xyz.in&#34;</span>
+	<span style="color:#a6e22e">person</span>.<span style="color:#a6e22e">IsActive</span> = <span style="color:#66d9ef">true</span>
+
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">person</span>)
+}
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>Your project directory should now look like</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">.
+ |-pb
+ | |-person.proto
+ | |-person.pb.go
+ |-go.mod
+ |-go.sum
+ |-main.go</code></pre></td></tr></table>
+</div>
+</div>
+<p>Now you can see the output on running main file like:
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">➜  example1 git:<span style="color:#f92672">(</span>master<span style="color:#f92672">)</span> ✗ go run main.go                                                                        
+id:1001  email:<span style="color:#e6db74">&#34;abc@xyz.in&#34;</span>  is_active:true</code></pre></td></tr></table>
+</div>
+</div></p>
+<p>You can checkout code for this example here on <a href="https://github.com/sri-shubham/blogcode/tree/master/Getting_Started_In_Protobuf_With_Go">github</a></p>
+
+</content>
+<p>
+  
+  <a href="https://example.com/blog/go/">#Go</a>
+  
+  <a href="https://example.com/blog/protobuf/">#Protobuf</a>
+  
+  <a href="https://example.com/blog/protocol-buffer/">#Protocol Buffer</a>
+  
+</p>
+
+  </main>
+  <footer>Made with <a href="https://github.com/janraasch/hugo-bearblog/">Hugo ʕ•ᴥ•ʔ Bear</a>
+</footer>
+
+    
+</body>
+
+</html>
