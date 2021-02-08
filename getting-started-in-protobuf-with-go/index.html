@@ -34,7 +34,7 @@
 <meta itemprop="description" content="Understanding protocol buffers and getting started using Go.">
 <meta itemprop="datePublished" content="2021-02-06T16:53:17+05:30" />
 <meta itemprop="dateModified" content="2021-02-06T16:53:17+05:30" />
-<meta itemprop="wordCount" content="504">
+<meta itemprop="wordCount" content="714">
 <meta itemprop="image" content="https://sri-shubham.github.io/images/share.png"/>
 
 
@@ -326,6 +326,112 @@ id:1001  email:<span style="color:#e6db74">&#34;abc@xyz.in&#34;</span>  is_activ
 </div>
 </div></p>
 <p>You can checkout code for this example here on <a href="https://github.com/sri-shubham/blogcode/tree/master/Getting_Started_In_Protobuf_With_Go">github</a></p>
+<h2 id="moment-of-truth">Moment of Truth</h2>
+<p>Lets compare the difference in message size that we have been talking about. We will compare same data stored in JSON and protobuf serialized message.</p>
+<p>We added a new message to protobuf file and compiled it.</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-proto" data-lang="proto"><span style="color:#75715e">// Person : Schema describing a person
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">message</span> <span style="color:#a6e22e">PersonList</span> {<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>  <span style="color:#66d9ef">repeated</span> Person persons <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}</code></pre></td></tr></table>
+</div>
+</div>
+<p>Now we will take this new message publish data and serialize to see the difference in size.</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">list</span> <span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">PersonList</span>
+
+	<span style="color:#a6e22e">list</span>.<span style="color:#a6e22e">Persons</span> = append(<span style="color:#a6e22e">list</span>.<span style="color:#a6e22e">Persons</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">Person</span>{
+		<span style="color:#a6e22e">Id</span>:       <span style="color:#ae81ff">1001</span>,
+		<span style="color:#a6e22e">Email</span>:    <span style="color:#e6db74">&#34;JonDoe@xyz.com&#34;</span>,
+		<span style="color:#a6e22e">IsActive</span>: <span style="color:#66d9ef">false</span>,
+	})
+
+	<span style="color:#a6e22e">list</span>.<span style="color:#a6e22e">Persons</span> = append(<span style="color:#a6e22e">list</span>.<span style="color:#a6e22e">Persons</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">Person</span>{
+		<span style="color:#a6e22e">Id</span>:       <span style="color:#ae81ff">1002</span>,
+		<span style="color:#a6e22e">Email</span>:    <span style="color:#e6db74">&#34;Ronald@xyz.com&#34;</span>,
+		<span style="color:#a6e22e">IsActive</span>: <span style="color:#66d9ef">false</span>,
+	})
+
+	<span style="color:#a6e22e">list</span>.<span style="color:#a6e22e">Persons</span> = append(<span style="color:#a6e22e">list</span>.<span style="color:#a6e22e">Persons</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">Person</span>{
+		<span style="color:#a6e22e">Id</span>:       <span style="color:#ae81ff">1003</span>,
+		<span style="color:#a6e22e">Email</span>:    <span style="color:#e6db74">&#34;Harold@xyz.com&#34;</span>,
+		<span style="color:#a6e22e">IsActive</span>: <span style="color:#66d9ef">false</span>,
+	})
+
+	<span style="color:#a6e22e">pbout</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">proto</span>.<span style="color:#a6e22e">Marshal</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">list</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+
+	<span style="color:#a6e22e">jsonOut</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">Marshal</span>(<span style="color:#a6e22e">list</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;length of protoOut&#34;</span>, len(<span style="color:#a6e22e">pbout</span>))
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;length of jsonOut&#34;</span>, len(<span style="color:#a6e22e">jsonOut</span>))
+}
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>Finally lets run the program and check. Almost 3 times smaller message size.</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">➜  example2 git:<span style="color:#f92672">(</span>master<span style="color:#f92672">)</span> ✗ go run main.go
+length of protoOut <span style="color:#ae81ff">63</span>
+length of jsonOut <span style="color:#ae81ff">124</span></code></pre></td></tr></table>
+</div>
+</div>
 
 </content>
 <p>
